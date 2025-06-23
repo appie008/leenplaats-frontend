@@ -29,7 +29,7 @@ const Producten = () => {
       <ul>
         {products.map(product => (
           <li key={product.product_id}>
-            🛒 {product.product_name} (ID: {product.product_id}) - €{product.price}
+            🛒 {product.name} - €{product.price}
           </li>
         ))}
       </ul>
