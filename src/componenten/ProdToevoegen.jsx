@@ -1,27 +1,46 @@
 import React, { useState } from 'react';
 
-const ProductForm = () => {
+const ProdToevoegen = () => {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState('');
+  const [postcode, setPostcode] = useState('');
+
 
   const handleSubmit = (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    fetch('http://leenplaats.test/api/producten', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, description, price })
-    })
-      .then(res => res.json())
-      .then(data => {
-        console.log('Product toegevoegd:', data);
-        setName('');
-        setDescription('');
-        setPrice('');
-      })
-      .catch(err => console.error('Fout bij toevoegen product:', err));
-  };
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        fetch('http://leenplaats.test/api/producten', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name,
+            description,
+            price,
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude
+          })
+        })
+          .then(res => res.json())
+          .then(data => {
+            console.log('Product toegevoegd:', data);
+            setName('');
+            setDescription('');
+            setPrice('');
+          })
+          .catch(err => console.error('Fout bij toevoegen product:', err));
+      },
+      (error) => {
+        console.error('Kan locatie niet ophalen:', error);
+      }
+    );
+  } else {
+    console.error('Geolocatie wordt niet ondersteund.');
+  }
+};
 
   return (
     <form onSubmit={handleSubmit} className="product-form">
@@ -44,9 +63,16 @@ const ProductForm = () => {
         onChange={(e) => setPrice(e.target.value)}
         required
       />
+      <input
+        type="text"
+        placeholder="Postcode"
+        value={postcode}
+        onChange={(e) => setPostcode(e.target.value)}
+      />
+
       <button type="submit">Product toevoegen</button>
     </form>
   );
 };
 
-export default ProductForm;
+export default ProdToevoegen;
