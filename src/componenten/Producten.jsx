@@ -16,7 +16,7 @@ const Producten = () => {
         },
         (error) => {
           console.error('Kan locatie niet ophalen:', error);
-          fetchProducts(); // Producten alsnog laden, alleen zonder afstandsberekening
+          fetchProducts(); // Producten alsnog laden, afstand wordt dan niet getoond
         }
       );
     } else {
@@ -55,31 +55,33 @@ const Producten = () => {
   }
 
   return (
-    <div>
-      <h2>Producten</h2>
-      <ul>
-        {products.map(product => {
-          let afstandText = '';
+  <div>
+    <h2>Producten</h2>
+    <ul>
+      {products.map(product => {
+        let beschikbaarheid = product.is_available ? '✅ Beschikbaar' : '❌ Uitgeleend';
+        let afstandText = '';
 
-          if (userLatitude && userLongitude && product.latitude && product.longitude) {
-            const afstand = getDistanceFromLatLonInKm(
-              userLatitude,
-              userLongitude,
-              product.latitude,
-              product.longitude
-            ).toFixed(2);
-            afstandText = ` - Afstand: ${afstand} km`;
-          }
+        if (userLatitude && userLongitude && product.latitude && product.longitude) {
+          const afstand = getDistanceFromLatLonInKm(
+            userLatitude,
+            userLongitude,
+            product.latitude,
+            product.longitude
+          ).toFixed(2);
+          afstandText = ` - Afstand: ${afstand} km`;
+        }
 
-          return (
-            <li key={product.id}>
-              🛒 {product.name} - €{product.price}{afstandText}
-            </li>
-          );
-        })}
-      </ul>
-    </div>
-  );
+        return (
+          <li key={product.id}>
+            🛒 {product.name} - €{product.price} - {beschikbaarheid}{afstandText}
+          </li>
+        );
+      })}
+    </ul>
+  </div>
+);
+
 };
 
 export default Producten;
