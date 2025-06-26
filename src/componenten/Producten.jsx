@@ -6,6 +6,10 @@ const Producten = () => {
   const [userLongitude, setUserLongitude] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  const [searchTerm, setSearchTerm] = useState('');
+  const [onlyAvailable, setOnlyAvailable] = useState(false);
+  const [sortOption, setSortOption] = useState(''); // 'price' of 'distance'
+
   useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -14,13 +18,9 @@ const Producten = () => {
           setUserLongitude(position.coords.longitude);
           fetchProducts();
         },
-        (error) => {
-          console.error('Kan locatie niet ophalen:', error);
-          fetchProducts(); // Producten alsnog laden, afstand wordt dan niet getoond
-        }
+        () => fetchProducts()
       );
     } else {
-      console.error('Geolocatie wordt niet ondersteund door deze browser.');
       fetchProducts();
     }
   }, []);
@@ -32,9 +32,31 @@ const Producten = () => {
         setProducts(data);
         setLoading(false);
       })
-      .catch(error => {
-        console.error('Fout bij ophalen producten:', error);
+      .catch(err => {
+        console.error('Fout bij ophalen producten:', err);
         setLoading(false);
+      });
+  };
+
+  const reserveerProduct = (productId) => {
+    fetch('http://leenplaats.test/api/reserveer', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + localStorage.getItem('token')
+      },
+      body: JSON.stringify({ product_id: productId })
+    })
+      .then(res => {
+        if (res.ok) {
+          alert('Product succesvol gereserveerd!');
+          fetchProducts(); // Lijst opnieuw laden
+        } else {
+          res.json().then(data => alert(data.message || 'Reserveren mislukt'));
+        }
+      })
+      .catch(err => {
+        console.error('Fout bij reserveren:', err);
       });
   };
 
@@ -50,38 +72,73 @@ const Producten = () => {
     return R * c;
   };
 
+  const filteredProducts = products
+    .filter(product => product.name.toLowerCase().includes(searchTerm.toLowerCase()))
+    .filter(product => (onlyAvailable ? product.is_available : true))
+    .map(product => {
+      let afstand = null;
+      if (userLatitude && userLongitude && product.latitude && product.longitude) {
+        afstand = getDistanceFromLatLonInKm(
+          userLatitude,
+          userLongitude,
+          product.latitude,
+          product.longitude
+        );
+      }
+      return { ...product, afstand };
+    })
+    .sort((a, b) => {
+      if (sortOption === 'price') return a.price - b.price;
+      if (sortOption === 'distance' && a.afstand != null && b.afstand != null) return a.afstand - b.afstand;
+      return 0;
+    });
+
   if (loading) {
     return <p>Producten laden...</p>;
   }
 
   return (
-  <div>
-    <h2>Producten</h2>
-    <ul>
-      {products.map(product => {
-        let beschikbaarheid = product.is_available ? '✅ Beschikbaar' : '❌ Uitgeleend';
-        let afstandText = '';
+    <div>
+      <h2>Producten</h2>
 
-        if (userLatitude && userLongitude && product.latitude && product.longitude) {
-          const afstand = getDistanceFromLatLonInKm(
-            userLatitude,
-            userLongitude,
-            product.latitude,
-            product.longitude
-          ).toFixed(2);
-          afstandText = ` - Afstand: ${afstand} km`;
-        }
+      <div>
+        <input
+          type="text"
+          placeholder="Zoek op productnaam"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+        <label>
+          <input
+            type="checkbox"
+            checked={onlyAvailable}
+            onChange={(e) => setOnlyAvailable(e.target.checked)}
+          />
+          Alleen beschikbare producten
+        </label>
+        <select value={sortOption} onChange={(e) => setSortOption(e.target.value)}>
+          <option value="">Sorteer op...</option>
+          <option value="price">Prijs</option>
+          <option value="distance">Afstand</option>
+        </select>
+      </div>
 
-        return (
+      <ul>
+        {filteredProducts.map(product => (
           <li key={product.id}>
-            🛒 {product.name} - €{product.price} - {beschikbaarheid}{afstandText}
-          </li>
-        );
-      })}
-    </ul>
-  </div>
-);
+            🛒 {product.name} - €{product.price} - {product.is_available ? '✅ Beschikbaar' : '❌ Uitgeleend'}
+            {product.afstand != null && ` - Afstand: ${product.afstand.toFixed(2)} km`}
 
+            {product.is_available && (
+              <button onClick={() => reserveerProduct(product.id)}>
+                Reserveer
+              </button>
+            )}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
 };
 
 export default Producten;
