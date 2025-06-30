@@ -39,6 +39,16 @@ const Producten = () => {
   };
 
   const reserveerProduct = (productId) => {
+    // Direct de status bijwerken in de lokale state
+    setProducts(prevProducts => 
+      prevProducts.map(product => 
+        product.id === productId 
+          ? { ...product, is_available: false }
+          : product
+      )
+    );
+
+    // Reservering naar server sturen
     fetch('/api/reserveer', {
       method: 'POST',
       headers: {
@@ -50,13 +60,31 @@ const Producten = () => {
       .then(res => {
         if (res.ok) {
           alert('Product succesvol gereserveerd!');
-          fetchProducts(); // Lijst opnieuw laden
+          // Optioneel: lijst opnieuw laden om zeker te zijn van de server status
+          // fetchProducts();
         } else {
+          // Als reservering mislukt, status terugzetten
+          setProducts(prevProducts => 
+            prevProducts.map(product => 
+              product.id === productId 
+                ? { ...product, is_available: true }
+                : product
+            )
+          );
           res.json().then(data => alert(data.message || 'Reserveren mislukt'));
         }
       })
       .catch(err => {
         console.error('Fout bij reserveren:', err);
+        // Als er een fout optreedt, status terugzetten
+        setProducts(prevProducts => 
+          prevProducts.map(product => 
+            product.id === productId 
+              ? { ...product, is_available: true }
+              : product
+          )
+        );
+        alert('Er is iets misgegaan bij het reserveren');
       });
   };
 
