@@ -2,7 +2,7 @@ import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import Home from './componenten/Home';
 import Producten from './componenten/Producten';
 import ProdToevoegen from './componenten/ProdToevoegen';
-import Login from './componenten/Login'; // import Login-component
+import Login from './componenten/login'; // Fixed casing to match actual filename
 import Register from './componenten/Register';
 
 
