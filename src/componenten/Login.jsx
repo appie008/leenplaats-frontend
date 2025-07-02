@@ -1,33 +1,32 @@
 import React, { useState } from 'react';
 
-const Register = () => {
-  const [name, setName] = useState('');
+const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const handleRegister = (e) => {
+  const handleLogin = (e) => {
     e.preventDefault();
     setLoading(true);
 
-    fetch('/api/register', {
+    fetch('/api/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, email, password })
+      body: JSON.stringify({ email, password })
     })
       .then(res => res.json())
       .then(data => {
         if (data.token) {
           localStorage.setItem('token', data.token);
-          alert('Registratie gelukt, je bent nu ingelogd!');
+          alert('Je bent succesvol ingelogd!');
           window.location.href = '/producten';
         } else {
-          alert('Registratie mislukt: ' + (data.message || 'Controleer je gegevens'));
+          alert('Login mislukt: ' + (data.message || 'Controleer je gegevens'));
         }
       })
       .catch(err => {
-        console.error('Fout bij registreren:', err);
-        alert('Er is iets misgegaan bij het registreren');
+        console.error('Fout bij inloggen:', err);
+        alert('Er is iets misgegaan bij het inloggen');
       })
       .finally(() => {
         setLoading(false);
@@ -38,34 +37,19 @@ const Register = () => {
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <h2 className="mt-6 text-center text-3xl font-bold text-gray-900">
-          Maak een nieuw account
+          Inloggen op je account
         </h2>
         <p className="mt-2 text-center text-sm text-gray-600">
-          Al een account?{' '}
-          <a href="/login" className="font-medium text-primary-600 hover:text-primary-500">
-            Log hier in
+          Nog geen account?{' '}
+          <a href="/register" className="font-medium text-primary-600 hover:text-primary-500">
+            Registreer hier
           </a>
         </p>
       </div>
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div className="card">
-          <form onSubmit={handleRegister} className="space-y-6">
-            <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
-                Volledige naam
-              </label>
-              <input
-                id="name"
-                type="text"
-                placeholder="Je volledige naam"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className="input-field"
-                required
-              />
-            </div>
-
+          <form onSubmit={handleLogin} className="space-y-6">
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
                 E-mailadres
@@ -107,7 +91,7 @@ const Register = () => {
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
               ) : null}
-              {loading ? 'Bezig met registreren...' : 'Account aanmaken'}
+              {loading ? 'Bezig met inloggen...' : 'Inloggen'}
             </button>
           </form>
         </div>
@@ -116,4 +100,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default Login;
