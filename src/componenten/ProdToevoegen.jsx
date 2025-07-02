@@ -63,17 +63,17 @@ const ProdToevoegen = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-2xl mx-auto">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Product Toevoegen</h1>
-          <p className="text-gray-600">Voeg een nieuw product toe aan de Leenplaats</p>
+    <div className="products-container">
+      <div className="container" style={{maxWidth: '42rem'}}>
+        <div className="page-header">
+          <h1 className="page-title">Product Toevoegen</h1>
+          <p className="page-description">Voeg een nieuw product toe aan de Leenplaats</p>
         </div>
 
         <div className="card">
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+          <form onSubmit={handleSubmit} className="form">
+            <div className="form-group">
+              <label htmlFor="name" className="form-label">
                 Productnaam *
               </label>
               <input
@@ -87,8 +87,8 @@ const ProdToevoegen = () => {
               />
             </div>
 
-            <div>
-              <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-2">
+            <div className="form-group">
+              <label htmlFor="description" className="form-label">
                 Beschrijving
               </label>
               <textarea
@@ -97,12 +97,12 @@ const ProdToevoegen = () => {
                 placeholder="Beschrijf je product..."
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                className="input-field resize-none"
+                className="textarea-field"
               />
             </div>
 
-            <div>
-              <label htmlFor="price" className="block text-sm font-medium text-gray-700 mb-2">
+            <div className="form-group">
+              <label htmlFor="price" className="form-label">
                 Prijs per dag (€) *
               </label>
               <input
@@ -118,9 +118,9 @@ const ProdToevoegen = () => {
               />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label htmlFor="latitude" className="block text-sm font-medium text-gray-700 mb-2">
+            <div className="grid-2">
+              <div className="form-group">
+                <label htmlFor="latitude" className="form-label">
                   Latitude *
                 </label>
                 <input
@@ -133,8 +133,8 @@ const ProdToevoegen = () => {
                   required
                 />
               </div>
-              <div>
-                <label htmlFor="longitude" className="block text-sm font-medium text-gray-700 mb-2">
+              <div className="form-group">
+                <label htmlFor="longitude" className="form-label">
                   Longitude *
                 </label>
                 <input
@@ -152,9 +152,10 @@ const ProdToevoegen = () => {
             <button
               type="button"
               onClick={getCurrentLocation}
-              className="btn-secondary w-full flex items-center justify-center"
+              className="btn-secondary"
+              style={{width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center'}}
             >
-              <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg style={{width: '1.25rem', height: '1.25rem', marginRight: '0.5rem'}} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
               </svg>
@@ -164,15 +165,16 @@ const ProdToevoegen = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full btn-primary flex justify-center items-center"
+              className={`btn-primary ${loading ? 'btn-loading' : ''}`}
+              style={{width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center'}}
             >
               {loading ? (
-                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
               ) : (
-                <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg style={{width: '1.25rem', height: '1.25rem', marginRight: '0.5rem'}} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                 </svg>
               )}

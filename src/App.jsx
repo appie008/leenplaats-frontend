@@ -9,50 +9,35 @@ function App() {
   return (
     <Router>
       {/* Navigatiebalk */}
-      <nav className="bg-white shadow-lg border-b border-gray-200 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
+      <nav className="navbar">
+        <div className="navbar-container">
+          <div className="navbar-content">
             
             {/* Logo en hoofdnavigatie */}
-            <div className="flex items-center space-x-8">
-              <Link to="/" className="text-2xl font-bold text-primary-600 hover:text-primary-700 transition-colors">
+            <div className="navbar-left">
+              <Link to="/" className="logo">
                 Leenplaats
               </Link>
               
-              <div className="hidden md:flex space-x-6">
-                <Link 
-                  to="/" 
-                  className="text-gray-700 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
-                >
+              <div className="nav-links">
+                <Link to="/" className="nav-link">
                   Home
                 </Link>
-                <Link 
-                  to="/producten" 
-                  className="text-gray-700 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
-                >
+                <Link to="/producten" className="nav-link">
                   Producten
                 </Link>
-                <Link 
-                  to="/prodtoevoegen" 
-                  className="text-gray-700 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
-                >
+                <Link to="/prodtoevoegen" className="nav-link">
                   Product Toevoegen
                 </Link>
               </div>
             </div>
 
             {/* Inloggen/Registreren rechts */}
-            <div className="flex items-center space-x-4">
-              <Link 
-                to="/login" 
-                className="text-gray-700 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
-              >
+            <div className="navbar-right">
+              <Link to="/login" className="nav-link">
                 Inloggen
               </Link>
-              <Link 
-                to="/register" 
-                className="btn-primary text-sm"
-              >
+              <Link to="/register" className="btn-primary">
                 Registreren
               </Link>
             </div>
