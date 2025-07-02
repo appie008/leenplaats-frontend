@@ -7,7 +7,7 @@ const Login = () => {
   const handleLogin = (e) => {
     e.preventDefault();
 
-    fetch('http://leenplaats.test/api/login', {
+    fetch('/api/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password })

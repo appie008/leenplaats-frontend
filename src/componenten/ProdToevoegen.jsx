@@ -10,7 +10,7 @@ const ProdToevoegen = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    fetch('http://leenplaats.test/api/producten', {
+    fetch('/api/producten', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

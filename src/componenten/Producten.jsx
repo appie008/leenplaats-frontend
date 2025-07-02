@@ -27,7 +27,7 @@ const Producten = () => {
   }, []);
 
   const fetchProducts = () => {
-    fetch('http://leenplaats.test/api/producten')
+    fetch('/api/producten')
       .then(response => response.json())
       .then(data => {
         setProducts(data);
@@ -40,7 +40,17 @@ const Producten = () => {
   };
 
   const reserveerProduct = (productId) => {
-    fetch('http://leenplaats.test/api/reserveer', {
+    // Direct de status bijwerken in de lokale state
+    setProducts(prevProducts => 
+      prevProducts.map(product => 
+        product.id === productId 
+          ? { ...product, is_available: false }
+          : product
+      )
+    );
+
+    // Reservering naar server sturen
+    fetch('/api/reserveer', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -53,11 +63,28 @@ const Producten = () => {
           alert('Product succesvol gereserveerd!');
           fetchProducts();
         } else {
+          // Als reservering mislukt, status terugzetten
+          setProducts(prevProducts => 
+            prevProducts.map(product => 
+              product.id === productId 
+                ? { ...product, is_available: true }
+                : product
+            )
+          );
           res.json().then(data => alert(data.message || 'Reserveren mislukt'));
         }
       })
       .catch(err => {
         console.error('Fout bij reserveren:', err);
+        // Als er een fout optreedt, status terugzetten
+        setProducts(prevProducts => 
+          prevProducts.map(product => 
+            product.id === productId 
+              ? { ...product, is_available: true }
+              : product
+          )
+        );
+        alert('Er is iets misgegaan bij het reserveren');
       });
   };
 
