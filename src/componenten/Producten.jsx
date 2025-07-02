@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import './Producten.css';
 
 const Producten = () => {
   const [products, setProducts] = useState([]);
@@ -8,7 +9,7 @@ const Producten = () => {
 
   const [searchTerm, setSearchTerm] = useState('');
   const [onlyAvailable, setOnlyAvailable] = useState(false);
-  const [sortOption, setSortOption] = useState(''); // 'price' of 'distance'
+  const [sortOption, setSortOption] = useState('');
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -50,7 +51,7 @@ const Producten = () => {
       .then(res => {
         if (res.ok) {
           alert('Product succesvol gereserveerd!');
-          fetchProducts(); // Lijst opnieuw laden
+          fetchProducts();
         } else {
           res.json().then(data => alert(data.message || 'Reserveren mislukt'));
         }
@@ -98,10 +99,10 @@ const Producten = () => {
   }
 
   return (
-    <div>
+    <div className="producten-container">
       <h2>Producten</h2>
 
-      <div>
+      <div className="filter-container">
         <input
           type="text"
           placeholder="Zoek op productnaam"
@@ -123,20 +124,23 @@ const Producten = () => {
         </select>
       </div>
 
-      <ul>
+      <div className="product-grid">
         {filteredProducts.map(product => (
-          <li key={product.id}>
-            🛒 {product.name} - €{product.price} - {product.is_available ? '✅ Beschikbaar' : '❌ Uitgeleend'}
-            {product.afstand != null && ` - Afstand: ${product.afstand.toFixed(2)} km`}
-
+          <div className="product-card" key={product.id}>
+            <h3>{product.name}</h3>
+            <p>Prijs: €{product.price}</p>
+            <p>{product.is_available ? '✅ Beschikbaar' : '❌ Uitgeleend'}</p>
+            {product.afstand != null && (
+              <p>Afstand: {product.afstand.toFixed(2)} km</p>
+            )}
             {product.is_available && (
               <button onClick={() => reserveerProduct(product.id)}>
                 Reserveer
               </button>
             )}
-          </li>
+          </div>
         ))}
-      </ul>
+      </div>
     </div>
   );
 };
