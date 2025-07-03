@@ -26,7 +26,7 @@ const Producten = () => {
   }, []);
 
   const fetchProducts = () => {
-    fetch('/api/producten')
+    fetch('http://leenplaats.test/api/producten')
       .then(response => response.json())
       .then(data => {
         setProducts(data);
@@ -49,7 +49,7 @@ const Producten = () => {
     );
 
     // Reservering naar server sturen
-    fetch('/api/reserveer', {
+    fetch('http://leenplaats.test/api/reserveer', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
