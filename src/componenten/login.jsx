@@ -81,6 +81,7 @@ const Login = () => {
               disabled={loading}
               className={`btn-primary ${loading ? 'btn-loading' : ''}`}
             >
+
               {loading ? 'Bezig met inloggen...' : 'Inloggen'}
             </button>
           </form>

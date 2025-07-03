@@ -46,6 +46,7 @@ const Producten = () => {
     }
 
     fetch('http://leenplaats.test/api/reserve', {
+
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
