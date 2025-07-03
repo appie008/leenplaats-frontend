@@ -6,6 +6,16 @@ import Login from './componenten/Login';
 import Register from './componenten/Register';
 
 function App() {
+  const logout = () =>  {
+    fetch('http://leenplaats.test/api/logout', { 
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+    }).then(() => {
+      localStorage.removeItem('token');
+      window.location.href = '/login';
+    })
+  };
+
   return (
     <Router>
       {/* Navigatiebalk */}
@@ -37,6 +47,9 @@ function App() {
               <Link to="/login" className="nav-link">
                 Inloggen
               </Link>
+              <button onClick={logout} className="nav-link">
+                logout
+              </button>
               <Link to="/register" className="btn-primary">
                 Registreren
               </Link>

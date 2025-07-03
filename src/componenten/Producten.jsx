@@ -26,7 +26,7 @@ const Producten = () => {
   }, []);
 
   const fetchProducts = () => {
-    fetch('/api/producten')
+    fetch('http://leenplaats.test/api/producten')
       .then(response => response.json())
       .then(data => {
         setProducts(data);
@@ -39,50 +39,35 @@ const Producten = () => {
   };
 
   const reserveerProduct = (productId) => {
-    // Direct de status bijwerken in de lokale state
-    setProducts(prevProducts => 
-      prevProducts.map(product => 
-        product.id === productId 
-          ? { ...product, is_available: false }
-          : product
-      )
-    );
+    const token = localStorage.getItem('token');
+    if (!token) {
+      alert('Je moet eerst inloggen om te reserveren.');
+      return;
+    }
 
-    // Reservering naar server sturen
-    fetch('/api/reserveer', {
+    fetch('http://leenplaats.test/api/reserve', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + localStorage.getItem('token')
+        'Authorization': 'Bearer ' + token
       },
-      body: JSON.stringify({ product_id: productId })
+      body: JSON.stringify({
+        product_id: productId,
+        start_date: new Date().toISOString(),
+        end_date: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString()
+      })
     })
-      .then(res => {
-        if (res.ok) {
+      .then(res => res.json())
+      .then(data => {
+        if (data.message && data.message.includes('succesvol')) {
           alert('Product succesvol gereserveerd!');
           fetchProducts();
         } else {
-          // Als reservering mislukt, status terugzetten
-          setProducts(prevProducts => 
-            prevProducts.map(product => 
-              product.id === productId 
-                ? { ...product, is_available: true }
-                : product
-            )
-          );
-          res.json().then(data => alert(data.message || 'Reserveren mislukt'));
+          alert(data.message || 'Reserveren mislukt');
         }
       })
       .catch(err => {
         console.error('Fout bij reserveren:', err);
-        // Als er een fout optreedt, status terugzetten
-        setProducts(prevProducts => 
-          prevProducts.map(product => 
-            product.id === productId 
-              ? { ...product, is_available: true }
-              : product
-          )
-        );
         alert('Er is iets misgegaan bij het reserveren');
       });
   };
@@ -146,7 +131,7 @@ const Producten = () => {
         <div className="card filters-card">
           <div className="filters-content">
             <div className="search-container">
-              <div style={{position: 'relative'}}>
+              <div style={{ position: 'relative' }}>
                 <svg className="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
@@ -159,7 +144,7 @@ const Producten = () => {
                 />
               </div>
             </div>
-            
+
             <div className="filter-checkbox-container">
               <input
                 id="available-only"
@@ -172,9 +157,9 @@ const Producten = () => {
                 Alleen beschikbaar
               </label>
             </div>
-            
-            <select 
-              value={sortOption} 
+
+            <select
+              value={sortOption}
               onChange={(e) => setSortOption(e.target.value)}
               className="sort-select"
             >
@@ -185,7 +170,7 @@ const Producten = () => {
           </div>
         </div>
 
-        {/* Products Grid */}
+        {/* Producten Grid */}
         {filteredProducts.length === 0 ? (
           <div className="empty-state">
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -204,11 +189,11 @@ const Producten = () => {
                     {product.is_available ? '✅ Beschikbaar' : '❌ Uitgeleend'}
                   </span>
                 </div>
-                
+
                 {product.description && (
                   <p className="product-description">{product.description}</p>
                 )}
-                
+
                 <div className="product-details">
                   <div className="product-detail">
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -216,7 +201,7 @@ const Producten = () => {
                     </svg>
                     €{product.price} per dag
                   </div>
-                  
+
                   {product.afstand != null && (
                     <div className="product-detail">
                       <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
