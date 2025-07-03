@@ -8,12 +8,10 @@ import Register from './componenten/Register';
 function App() {
   return (
     <Router>
-      {/* Navigatiebalk */}
       <nav className="navbar">
         <div className="navbar-container">
           <div className="navbar-content">
             
-            {/* Logo en hoofdnavigatie */}
             <div className="navbar-left">
               <Link to="/" className="logo">
                 Leenplaats
@@ -32,7 +30,6 @@ function App() {
               </div>
             </div>
 
-            {/* Inloggen/Registreren rechts */}
             <div className="navbar-right">
               <Link to="/login" className="nav-link">
                 Inloggen
@@ -45,7 +42,6 @@ function App() {
         </div>
       </nav>
 
-      {/* Main content */}
       <main className="min-h-screen">
         <Routes>
           <Route path="/" element={<Home />} />

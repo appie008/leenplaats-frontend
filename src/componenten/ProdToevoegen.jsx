@@ -12,7 +12,7 @@ const ProdToevoegen = () => {
     e.preventDefault();
     setLoading(true);
 
-    fetch('/api/producten', {
+    fetch('http://leenplaats.test/api/producten', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

@@ -29,7 +29,6 @@ function Home() {
           </div>
         </div>
 
-        {/* Feature cards */}
         <div className="features-grid">
           <div className="card feature-card">
             <div className="feature-icon primary">
