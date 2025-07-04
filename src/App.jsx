@@ -4,6 +4,7 @@ import Producten from './componenten/Producten';
 import ProdToevoegen from './componenten/ProdToevoegen';
 import Login from './componenten/login';
 import Register from './componenten/Register';
+import ProtectedRoute from './componenten/ProtectedRoute';
 
 function App() {
   const logout = () =>  {
@@ -63,7 +64,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/producten" element={<Producten />} />
-          <Route path="/prodtoevoegen" element={<ProdToevoegen />} />
+          <Route path="/prodtoevoegen" element={<ProtectedRoute><ProdToevoegen /></ProtectedRoute>}/>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
         </Routes>

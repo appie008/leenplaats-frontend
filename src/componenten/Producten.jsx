@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
 
 const Producten = () => {
+  const navigate = useNavigate();
   const [products, setProducts] = useState([]);
   const [userLatitude, setUserLatitude] = useState(null);
   const [userLongitude, setUserLongitude] = useState(null);
@@ -216,11 +219,19 @@ const Producten = () => {
 
                 {product.is_available && (
                   <button
-                    onClick={() => reserveerProduct(product.id)}
-                    className="btn-primary reserve-button"
+                    onClick={() => {
+                    const token = localStorage.getItem('token');
+                      if (!token) {
+                        navigate('/login');  // Stuur gebruiker naar login pagina
+                        return;
+                      }
+                          reserveerProduct(product.id);
+                    }}
+                  className="btn-primary reserve-button"
                   >
-                    Reserveren
-                  </button>
+                  Reserveren
+                </button>
+
                 )}
               </div>
             ))}
